@@ -1,0 +1,8 @@
+# Standard System Junk (Always good to have)
+.DS_Store
+Thumbs.db
+*.local
+
+# Future-proofing for Arduino
+build/
+bin/
