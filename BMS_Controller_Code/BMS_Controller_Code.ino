@@ -1,4 +1,3 @@
-//Test conmment
 /**
  * @file BMS_Controller_Code.ino
  * @author TBD
