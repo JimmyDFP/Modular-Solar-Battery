@@ -50,7 +50,7 @@ void loop() {
   float currentTemp =readC(tempSensPin);
   if (currentTemp > TEMPERATURE_CUTOFF) {
     setMosfet(0, gatePin1); //Shuts off when temperature above 25 C
-  } else if (currentTemp > TEMPERATURE_CUTOFF -2){ 
+  } else if (currentTemp < TEMPERATURE_CUTOFF -2){ 
     setMosfet(1, gatePin1); //Turns back on when temperature cools down to 23 C
   }
   delay(1000);
