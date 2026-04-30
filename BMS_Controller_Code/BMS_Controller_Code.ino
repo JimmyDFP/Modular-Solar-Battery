@@ -3,7 +3,7 @@
  * @author TBD
  * @brief Manages the battery of our portable charger, disconnecting 
  *        the battery when necessary using a mosfet.
- * @version 0.1
+ * @version 0.2
  * @date 2026-03-04
  */
 
@@ -21,6 +21,7 @@ const byte tempSensPin = A0;
 const byte readVoltPin = A1;  
 
 const byte TEMPERATURE_CUTOFF = 25; /// Threshold for temperature in C to cut off battery
+const byte CURRENT_CUTOFF = 0.5; ///Threshold for the current in mA to cut off battery
 
 /**
  * @brief Standard Arduino setup.
@@ -36,7 +37,6 @@ void setup() {
   Serial.begin(9600);
   Wire.begin();
   currentSensSetup();
-  
 }
 
 /**
@@ -44,14 +44,19 @@ void setup() {
  * TBD...
  */
 void loop() {
-  //currentSenseDebug()
-  //readVoltDebug()
-  //tempSenseDebug()
+  currentSenseDebug();
+  readVoltDebug()
+  tempSenseDebug()
   float currentTemp =readC(tempSensPin);
   if (currentTemp > TEMPERATURE_CUTOFF) {
     setMosfet(0, gatePin1); //Shuts off when temperature above 25 C
   } else if (currentTemp < TEMPERATURE_CUTOFF -2){ 
     setMosfet(1, gatePin1); //Turns back on when temperature cools down to 23 C
+  }
+  if (ina219.getCurrent_mA() > SHUTOFF_CURRENT) {
+    setMosfet(0, gatePin1);Z
+  } else {
+    setMosfet(1, gatePin1);
   }
   delay(1000);
 }
@@ -141,19 +146,19 @@ void currentSenseDebug() {
 
   Serial.print("Bus Voltage: ");
   Serial.print(busVoltage);
-  Serial.println(" V");
+  Serial.print(" V");
 
-  Serial.print("Shunt Voltage: ");
+  Serial.print(" Shunt Voltage: ");
   Serial.print(shuntVoltage);
-  Serial.println(" mV");
+  Serial.print(" mV");
 
-  Serial.print("Current: ");
+  Serial.print(" Current: ");
   Serial.print(current_mA);
-  Serial.println(" mA");
+  Serial.print(" mA");
 
-  Serial.print("Power: ");
+  Serial.print(" Power: ");
   Serial.print(power_mW);
-  Serial.println(" mW");
+  Serial.print(" mW");
 } 
 
 /**
@@ -162,11 +167,11 @@ void currentSenseDebug() {
  * TMP36 temperature sensor.
  */
 void tempSenseDebug(){
-  Serial.print("Temperature in C:");
+  Serial.print(" Temperature in C:");
   Serial.print(readC(tempSensPin));
-  Serial.println(" C");
+  Serial.print(" C");
 
-  Serial.print("Temperature in F:");
+  Serial.print(" Temperature in F:");
   Serial.print(readF(tempSensPin));
   Serial.println(" F");
 }
@@ -177,7 +182,7 @@ void tempSenseDebug(){
  * on microcontroller voltage reading.
  */
 void readVoltDebug(){
-  Serial.print("Voltage: ");
+  Serial.print(" Voltage: ");
   Serial.print(readVolt(readVoltPin));
-  Serial.println(" V");
+  Serial.print(" V");
 }
